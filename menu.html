@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Secret: Culinary Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+
+        /* Color Coding for Categories */
+        .cat-Signatures { border-left: 5px solid #d4af37; }
+        .cat-Appetizers { border-left: 5px solid #ef4444; }
+        .cat-MainCourse { border-left: 5px solid #10b981; }
+        .cat-Chinese { border-left: 5px solid #8b5cf6; }
+        .cat-BreadsRice { border-left: 5px solid #f59e0b; }
+        .cat-Beverages { border-left: 5px solid #0ea5e9; }
+
+        /* Custom Scrollbar for Desktop */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #064e3b; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 10px; }
+
+        /* Hide Scrollbar for Horizontal Tabs */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .menu-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        @media (min-width: 768px) {
+            .menu-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+                background: #fff;
+            }
+        }
+
+        .gold-glow { text-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-up { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-[#fcfaf5] text-stone-900 font-sans antialiased selection:bg-emerald-200">
+
+    <!-- Hero -->
+    <header class="relative bg-emerald-950 text-white min-h-[35vh] md:min-h-[45vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_#d4af37_1.5px,_transparent_1.5px)] bg-[length:20px_20px] md:bg-[length:30px_30px]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/40 to-emerald-950"></div>
+        
+        <div class="container mx-auto px-6 relative z-10 text-center animate-up">
+            <h1 class="font-serif text-4xl sm:text-5xl md:text-7xl font-bold tracking-widest mb-3 gold-glow">
+                <span class="text-[#d4af37]">THE</span> SECRET
+            </h1>
+            <p class="text-emerald-100 tracking-[0.2em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm mb-4 md:6 font-semibold">Bar & Family Restaurant</p>
+            <p class="max-w-md md:max-w-xl mx-auto text-emerald-200/90 font-serif italic text-base md:text-lg leading-relaxed">
+                "Unlock a world of flavor where traditional mastery meets contemporary elegance."
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-12 md:space-y-16">
+
+        <!-- Explorer Interface -->
+        <section id="explorer" class="space-y-8 md:space-y-10 animate-up">
+            <div class="text-center px-4">
+                <h2 class="font-serif text-2xl md:text-3xl text-emerald-950 font-bold mb-2">The Culinary Explorer</h2>
+                <div class="h-0.5 w-12 md:w-16 bg-[#d4af37] mx-auto mb-4"></div>
+                <p class="text-stone-500 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
+                    Browse our extensive collections by category or search for specific ingredients to find your perfect pairing.
+                </p>
+            </div>
+
+            <!-- Mobile-Optimized Toolbar -->
+            <div class="sticky top-2 md:top-6 z-50 bg-white/95 backdrop-blur-md p-3 md:p-5 rounded-2xl md:rounded-3xl shadow-xl md:shadow-2xl border border-stone-100">
+                <div class="flex flex-col lg:flex-row justify-between items-center gap-4 md:gap-6">
+                    
+                    <!-- Categories (Horizontal Scroll Only - Fix for jumping issue) -->
+                    <div class="w-full lg:w-auto overflow-x-auto no-scrollbar flex items-center justify-start lg:justify-center gap-2 pb-1 lg:pb-0 scroll-smooth" id="categoryTabs">
+                        <!-- Buttons injected by JS -->
+                    </div>
+                    
+                    <!-- Search -->
+                    <div class="w-full lg:w-72 relative">
+                        <input type="text" id="searchInput" placeholder="Search dish or flavor..." 
+                               class="w-full pl-10 pr-4 py-2.5 md:py-3 rounded-xl md:rounded-2xl border border-stone-200 focus:ring-2 focus:ring-emerald-500 bg-stone-50 transition-all outline-none text-sm">
+                        <span class="absolute left-4 top-2.5 md:top-3.5 opacity-40">🔍</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Grid -->
+            <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8"></div>
+
+            <!-- Empty State -->
+            <div id="noResults" class="hidden text-center py-16 md:py-24 bg-stone-50 rounded-2xl md:rounded-[3rem] border-2 border-dashed border-stone-200">
+                <div class="text-3xl md:text-4xl mb-4">🕯️</div>
+                <h3 class="text-lg md:text-xl font-serif text-stone-600 mb-2 font-bold">The flavor remains a secret...</h3>
+                <p class="text-stone-400 text-xs md:text-sm mb-6 px-4">We couldn't find any dishes matching your search.</p>
+                <button onclick="app.resetFilters()" class="px-6 md:px-8 py-2.5 md:py-3 bg-emerald-900 text-[#d4af37] rounded-xl font-bold uppercase tracking-widest text-[9px] md:text-[10px] hover:bg-emerald-800 transition-colors shadow-lg">
+                    Show All Secrets
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-emerald-950 text-white pt-16 md:pt-24 pb-10 md:pb-12 relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-[#d4af37]"></div>
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="font-serif text-3xl text-[#d4af37] mb-4">THE SECRET</h2>
+            <p class="text-emerald-200/60 text-[10px] md:text-xs tracking-[0.3em] mb-10 md:12 uppercase font-medium">Atmosphere • Taste • Hospitality</p>
+            
+            <div class="flex justify-center flex-wrap gap-4 md:gap-8 text-[9px] md:text-[10px] font-black text-emerald-500 uppercase tracking-[0.15em] md:tracking-[0.2em] opacity-80 mb-10 md:12">
+                <span>GST Inclusive (5%)</span>
+                <span>Premium Bar</span>
+                <span>Family Dining</span>
+                <span>Signature Tandoor</span>
+            </div>
+
+            <div class="text-[9px] md:text-[10px] text-emerald-800/80 tracking-widest uppercase">
+                &copy; 2024 The Secret Bar & Restaurant • Curated Culinary Experience
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuData = [
+            // THE SECRET SIGNATURES
+            { id: 1, name: "The Secret SPL. Prawn Chilli", category: "Signatures", sub: "Chef's Top Pick", description: "Prawns tossed with spring onions and a secret spiced sauce.", price: "150 | 280", tags: ["Prawns", "Spicy", "Signature"], class: "cat-Signatures" },
+            { id: 2, name: "Non-Veg Kebab Platter", category: "Signatures", sub: "Chef's Top Pick", description: "An assortment of our best tandoori kebabs, served with mint chutney.", price: "300 | 500", tags: ["Assortment", "Platter", "Kebab"], class: "cat-Signatures" },
+            { id: 3, name: "Mutton Dehati Style", category: "Signatures", sub: "Chef's Top Pick", description: "Succulent mutton pieces slow-cooked in a traditional village-style gravy.", price: "420 | 800", tags: ["Mutton", "Village Style", "Gravy"], class: "cat-Signatures" },
+            { id: 4, name: "Chicken Resmii Kabab (8 Pcs)", category: "Signatures", sub: "Chef's Top Pick", description: "Delicate chicken kebabs marinated in cream and mild spices.", price: "— | 500", tags: ["Chicken", "Creamy", "Mild"], class: "cat-Signatures" },
+            { id: 5, name: "Paneer 65", category: "Signatures", sub: "Chef's Top Pick", description: "A popular spicy and crispy fried paneer appetizer.", price: "120 | 230", tags: ["Paneer", "Crispy", "Spicy"], class: "cat-Signatures" },
+
+            // SMALL BITES & APPETIZERS
+            { id: 6, name: "Tandoori Chicken", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Classic clay oven roasted chicken.", price: "250 | 450", tags: ["Chicken", "Tandoor"], class: "cat-Appetizers" },
+            { id: 7, name: "Chicken Leg Kebab (2/4 Pcs)", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Succulent chicken leg pieces in tandoori marinade.", price: "270 | 490", tags: ["Chicken", "Leg"], class: "cat-Appetizers" },
+            { id: 8, name: "Chicken Malai Kebab (4/8 Pcs)", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Creamy and mild skewered chicken.", price: "170 | 290", tags: ["Creamy", "Mild"], class: "cat-Appetizers" },
+            { id: 9, name: "Chicken Tikka / Seekh Kebab (4/8 Pcs)", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Spiced cubed or minced chicken grilled on skewers.", price: "150 | 240", tags: ["Classic", "Kebab"], class: "cat-Appetizers" },
+            { id: 10, name: "Chicken Lassoni / Achari Tikka", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Infused with garlic or tangy pickle spices.", price: "150 | 240", tags: ["Garlic", "Tangy"], class: "cat-Appetizers" },
+            { id: 11, name: "Chicken Kali Mirch Tikka", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Peppery and aromatic chicken tikka.", price: "150 | 250", tags: ["Pepper", "Spicy"], class: "cat-Appetizers" },
+            { id: 12, name: "Fish Tikka (4/8 Pcs)", category: "Appetizers", sub: "Tandoor Ka Khazana", description: "Fresh fish marinated and grilled.", price: "190 | 330", tags: ["Fish", "Seafood"], class: "cat-Appetizers" },
+            { id: 13, name: "Veg Kebab Platter", category: "Appetizers", sub: "Veg Tandoor", description: "Assortment of grilled vegetarian delights.", price: "220 | 380", tags: ["Veg", "Platter"], class: "cat-Appetizers" },
+            { id: 14, name: "Paneer Tikka / Achari / Malai", category: "Appetizers", sub: "Veg Tandoor", description: "Cottage cheese cubes grilled to smoky perfection.", price: "150 | 230", tags: ["Paneer", "Grilled"], class: "cat-Appetizers" },
+            { id: 15, name: "Mustard Paneer Tikka", category: "Appetizers", sub: "Veg Tandoor", description: "Paneer with a zesty mustard kick.", price: "140 | 220", tags: ["Paneer", "Mustard"], class: "cat-Appetizers" },
+            { id: 16, name: "Dahi Ke Kebab / Hara Bhara", category: "Appetizers", sub: "Veg Tandoor", description: "Yogurt or green spinach based soft kebabs.", price: "140 | 220", tags: ["Curd", "Spinach"], class: "cat-Appetizers" },
+            { id: 17, name: "Tandoori Aloo / Tandoori Gobhi", category: "Appetizers", sub: "Veg Tandoor", description: "Clay oven roasted potatoes or cauliflower.", price: "110 | 180", tags: ["Potato", "Cauliflower"], class: "cat-Appetizers" },
+            { id: 18, name: "Chicken Pakora (Bone/less)", category: "Appetizers", sub: "Bar Snack", description: "Crispy fried chicken fritters.", price: "190 | 200", tags: ["Chicken", "Fried"], class: "cat-Appetizers" },
+            { id: 19, name: "Fish Finger / Fish Fry", category: "Appetizers", sub: "Bar Snack", description: "Golden fried fish fingers or traditional fry.", price: "200", tags: ["Fish", "Crispy"], class: "cat-Appetizers" },
+            { id: 20, name: "Cheese Ball / Cherry Pineapple", category: "Appetizers", sub: "Bar Snack", description: "A retro combination of fruit and cheese.", price: "220 | 200", tags: ["Cheese", "Sweet"], class: "cat-Appetizers" },
+            { id: 21, name: "Paneer Pakora / Paneer Cutlet", category: "Appetizers", sub: "Bar Snack", description: "Fried paneer fritters or breaded cutlets.", price: "220 | 150", tags: ["Paneer", "Veg"], class: "cat-Appetizers" },
+            { id: 22, name: "Peanut Masala / Ghee Fry", category: "Appetizers", sub: "Bar Snack", description: "The ultimate bar side crunch.", price: "150 | 160", tags: ["Nuts", "Bar"], class: "cat-Appetizers" },
+            { id: 23, name: "French Fries / Veg Pakora", category: "Appetizers", sub: "Bar Snack", description: "Classic fries or assorted vegetable fritters.", price: "100 | 130", tags: ["Classic", "Veg"], class: "cat-Appetizers" },
+            { id: 24, name: "Masala Omelet / Boiled Egg", category: "Appetizers", sub: "Bar Snack", description: "Quick egg bites prepared to order.", price: "60 | 40", tags: ["Egg", "Protein"], class: "cat-Appetizers" },
+
+            // MAIN COURSE
+            { id: 25, name: "Mutton Rogan Josh / Korma", category: "Main Course", sub: "Non-Veg", description: "Aromatic Kashmiri mutton or rich Mughlai korma.", price: "250 | 400", tags: ["Mutton", "Kashmiri"], class: "cat-MainCourse" },
+            { id: 26, name: "Mutton Handi / Mutton Masala", category: "Main Course", sub: "Non-Veg", description: "Slow-cooked mutton in earthen pot or spiced gravy.", price: "260 | 420", tags: ["Mutton", "Spicy"], class: "cat-MainCourse" },
+            { id: 27, name: "Dehati Chicken", category: "Main Course", sub: "Non-Veg", description: "Traditional country-style chicken curry.", price: "300 | 550", tags: ["Chicken", "Village Style"], class: "cat-MainCourse" },
+            { id: 28, name: "Murgh Mussallam", category: "Main Course", sub: "Non-Veg", description: "Rich, whole-spiced chicken preparation.", price: "210 | 330", tags: ["Chicken", "Special"], class: "cat-MainCourse" },
+            { id: 29, name: "Chicken Butter / Tikka Masala", category: "Main Course", sub: "Non-Veg", description: "Creamy tomato gravy with tandoori chicken.", price: "180 | 270", tags: ["Butter", "Creamy"], class: "cat-MainCourse" },
+            { id: 30, name: "Chicken Handi / Chicken Kadhai", category: "Main Course", sub: "Non-Veg", description: "Pot-cooked or wok-tossed chicken masala.", price: "190 | 280", tags: ["Chicken", "Spicy"], class: "cat-MainCourse" },
+            { id: 31, name: "Chicken Bharta", category: "Main Course", sub: "Non-Veg", description: "Shredded chicken in a smooth, rich gravy.", price: "200 | 300", tags: ["Chicken", "Mashed"], class: "cat-MainCourse" },
+            { id: 32, name: "Chicken Curry / Do Pyaza", category: "Main Course", sub: "Non-Veg", description: "Classic curry or chicken with onions.", price: "170 | 260", tags: ["Chicken", "Classic"], class: "cat-MainCourse" },
+            { id: 33, name: "Egg Curry / Egg Masala", category: "Main Course", sub: "Non-Veg", description: "Boiled eggs in spiced tomato-onion base.", price: "90 | 150", tags: ["Egg", "Protein"], class: "cat-MainCourse" },
+            { id: 34, name: "Mushroom Butter / Do Pyaza", category: "Main Course", sub: "Vegetarian", description: "Mushrooms in buttery or onion-rich gravy.", price: "200 | 300", tags: ["Mushroom", "Veg"], class: "cat-MainCourse" },
+            { id: 35, name: "Paneer Punjabi / Butter Masala", category: "Main Course", sub: "Vegetarian", description: "Classic cottage cheese in rich sauces.", price: "140 | 220", tags: ["Paneer", "Rich"], class: "cat-MainCourse" },
+            { id: 36, name: "Kaju Curry / Malai Kofta", category: "Main Course", sub: "Vegetarian", description: "Cashew nut curry or cream-filled dumplings.", price: "200 | 300", tags: ["Cashew", "Creamy"], class: "cat-MainCourse" },
+            { id: 37, name: "Kadhai Paneer / Matar Paneer", category: "Main Course", sub: "Vegetarian", description: "Paneer with peppers or fresh green peas.", price: "150 | 230", tags: ["Paneer", "Classic"], class: "cat-MainCourse" },
+            { id: 38, name: "Dal Makhani (Overnight Simmered)", category: "Main Course", sub: "Vegetarian", description: "Slow-cooked black lentils with cream and butter.", price: "170", tags: ["Dal", "Rich"], class: "cat-MainCourse" },
+            { id: 39, name: "Plain Dal / Fry / Tadka", category: "Main Course", sub: "Vegetarian", description: "Comforting yellow lentil preparations.", price: "110 | 120 | 130", tags: ["Dal", "Healthy"], class: "cat-MainCourse" },
+            { id: 40, name: "Raita (Mix / Pineapple / Boondi)", category: "Main Course", sub: "Sides", description: "Refreshing yogurt with varied mix-ins.", price: "90 | 120 | 70", tags: ["Yogurt", "Cooling"], class: "cat-MainCourse" },
+
+            // CHINESE CORNER
+            { id: 41, name: "Chicken Chilli (Bone/less)", category: "Chinese", sub: "Chinese", description: "Indo-Chinese classic with bell peppers and soy.", price: "120 | 200", tags: ["Spicy", "Soy"], class: "cat-Chinese" },
+            { id: 42, name: "Chicken Manchurian / Schezwan", category: "Chinese", sub: "Chinese", description: "Savory balls or fiery schezwan sauce.", price: "150 | 250", tags: ["Indo-Chinese", "Saucier"], class: "cat-Chinese" },
+            { id: 43, name: "Garlic / Ginger / Lemon Chicken", category: "Chinese", sub: "Chinese", description: "Flavor-focused oriental chicken.", price: "150 | 250", tags: ["Chicken", "Zesty"], class: "cat-Chinese" },
+            { id: 44, name: "Veg Manchurian / Chilli / Roll", category: "Chinese", sub: "Chinese", description: "Vegetarian classics from the east.", price: "110 | 200", tags: ["Veg", "Starters"], class: "cat-Chinese" },
+            { id: 45, name: "Hakka / Schezwan Noodles", category: "Chinese", sub: "Chinese", description: "Wok-tossed noodles in varied flavors.", price: "130 to 240", tags: ["Noodles", "Wok"], class: "cat-Chinese" },
+            { id: 46, name: "Fried Rice (Veg/Mix/Schezwan)", category: "Chinese", sub: "Chinese", description: "Fragrant rice tossed with choice of protein.", price: "130 to 240", tags: ["Rice", "Tossed"], class: "cat-Chinese" },
+
+            // BREADS & RICE
+            { id: 47, name: "Tandoori Roti (Plain/Butter)", category: "Breads & Rice", sub: "Breads", description: "Whole wheat bread baked in tandoor.", price: "15 | 20", tags: ["Bread", "Whole Wheat"], class: "cat-BreadsRice" },
+            { id: 48, name: "Naan (Garlic/Cheese/Kashmiri)", category: "Breads & Rice", sub: "Breads", description: "Leavened oven-baked flatbread with toppings.", price: "70 | 70 | 110", tags: ["Bread", "Cheese"], class: "cat-BreadsRice" },
+            { id: 49, name: "Kulcha (Plain/Butter/Masala)", category: "Breads & Rice", sub: "Breads", description: "Stuffed or plain traditional flatbread.", price: "40 | 50 | 90", tags: ["Kulcha", "Stuffed"], class: "cat-BreadsRice" },
+            { id: 50, name: "Biryani (Mutton/Chicken/Veg)", category: "Breads & Rice", sub: "Rice", description: "Slow-cooked aromatic basmati rice.", price: "400 | 220 | 190", tags: ["Classic", "Rice"], class: "cat-BreadsRice" },
+            { id: 51, name: "Pulao (Veg/Paneer/Matar)", category: "Breads & Rice", sub: "Rice", description: "Fragrant rice with various mix-ins.", price: "150 | 180 | 130", tags: ["Veg", "Aromatic"], class: "cat-BreadsRice" },
+            { id: 52, name: "Steam Rice (Fine)", category: "Breads & Rice", sub: "Rice", description: "Plain boiled fine quality rice.", price: "90 | 100", tags: ["Rice", "Basic"], class: "cat-BreadsRice" },
+
+            // BEVERAGES & DESSERTS
+            { id: 53, name: "Kit Kat / Oreo / Shakes", category: "Beverages", sub: "Shakes", description: "Thick milkshakes blended with chocolate.", price: "200 | 150", tags: ["Sweet", "Cold"], class: "cat-Beverages" },
+            { id: 54, name: "Lassi / Butter Milk", category: "Beverages", sub: "Cooler", description: "Creamy yogurt-based traditional drink.", price: "65 | 40", tags: ["Fresh", "Yogurt"], class: "cat-Beverages" },
+            { id: 55, name: "Moong Dal / Gajar Halwa", category: "Beverages", sub: "Dessert", description: "Traditional slow-cooked hot puddings.", price: "130", tags: ["Hot", "Sweet"], class: "cat-Beverages" },
+            { id: 56, name: "Gulab Jamun", category: "Beverages", sub: "Dessert", description: "Milk syrup balls or chilled rice pudding.", price: "80 | 100", tags: ["Classic", "Dessert"], class: "cat-Beverages" }
+        ];
+
+        const app = {
+            activeCategory: 'All',
+            searchTerm: '',
+            categories: ['All', 'Signatures', 'Appetizers', 'Main Course', 'Chinese', 'Breads & Rice', 'Beverages'],
+
+            init() {
+                this.renderTabs();
+                this.renderGrid();
+                this.setupListeners();
+            },
+
+            setupListeners() {
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.searchTerm = e.target.value.toLowerCase();
+                    this.renderGrid();
+                });
+            },
+
+            renderTabs() {
+                const container = document.getElementById('categoryTabs');
+                container.innerHTML = this.categories.map(cat => `
+                    <button onclick="app.setCategory('${cat}')" 
+                            class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                                this.activeCategory === cat 
+                                ? 'bg-emerald-950 text-[#d4af37] shadow-xl' 
+                                : 'bg-white text-stone-500 border border-stone-100'
+                            }">${cat}</button>
+                `).join('');
+            },
+
+            setCategory(cat) {
+                this.activeCategory = cat;
+                this.renderTabs();
+                this.renderGrid();
+                
+                // Fix for the jumping issue: 
+                // Instead of global scrollIntoView, we manually scroll the container horizontally only.
+                const container = document.getElementById('categoryTabs');
+                const activeBtn = Array.from(container.children).find(btn => btn.innerText.toLowerCase() === cat.toLowerCase());
+                
+                if (activeBtn) {
+                    const containerWidth = container.offsetWidth;
+                    const btnOffset = activeBtn.offsetLeft;
+                    const btnWidth = activeBtn.offsetWidth;
+                    
+                    // Center the button in the horizontal scroll view
+                    container.scrollTo({
+                        left: btnOffset - (containerWidth / 2) + (btnWidth / 2),
+                        behavior: 'smooth'
+                    });
+                }
+            },
+
+            resetFilters() {
+                this.activeCategory = 'All';
+                this.searchTerm = '';
+                document.getElementById('searchInput').value = '';
+                this.renderTabs();
+                this.renderGrid();
+            },
+
+            renderGrid() {
+                const container = document.getElementById('menuGrid');
+                const noResults = document.getElementById('noResults');
+                const filtered = menuData.filter(item => {
+                    const matchCat = this.activeCategory === 'All' || item.category === this.activeCategory;
+                    const content = (item.name + item.description + item.tags.join('')).toLowerCase();
+                    const matchSearch = content.includes(this.searchTerm);
+                    return matchCat && matchSearch;
+                });
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '';
+                    noResults.classList.remove('hidden');
+                    return;
+                }
+
+                noResults.classList.add('hidden');
+                container.innerHTML = filtered.map((item, idx) => `
+                    <div class="menu-card ${item.class} rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 border border-stone-100 flex flex-col h-full animate-up" style="animation-delay: ${idx * 0.02}s">
+                        <div class="flex justify-between items-start mb-5 md:mb-6">
+                            <span class="text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-[#d4af37] bg-emerald-50 px-3 md:px-4 py-1 md:py-1.5 rounded-full">${item.sub}</span>
+                            <div class="text-right">
+                                <p class="text-[8px] md:text-[9px] text-stone-400 font-bold uppercase tracking-widest mb-0.5 md:mb-1">H | F Price</p>
+                                <p class="text-xs md:text-sm font-black text-emerald-950 tracking-tight">₹${item.price}</p>
+                            </div>
+                        </div>
+                        <h3 class="font-serif text-xl md:text-2xl font-bold text-emerald-950 mb-3 md:mb-4 leading-tight">${item.name}</h3>
+                        <p class="text-stone-500 text-[11px] md:text-xs leading-relaxed italic mb-6 md:mb-8">"${item.description}"</p>
+                        <div class="mt-auto flex flex-wrap gap-1.5 md:gap-2">
+                            ${item.tags.map(t => `<span class="text-[7px] md:text-[8px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50/50 px-2 md:px-2.5 py-0.5 md:py-1 rounded-lg">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        };
+
+        window.onload = () => app.init();
+    </script>
+</body>
+</html>
